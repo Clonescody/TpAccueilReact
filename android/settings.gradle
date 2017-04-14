@@ -1,0 +1,3 @@
+rootProject.name = 'TpAccueil4_4_2'
+
+include ':app'
