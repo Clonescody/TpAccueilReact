@@ -1,9 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
+import CustomGeolocation from './geoloc.android';
 import React, {Component} from 'react';
 
 import {
@@ -13,7 +8,8 @@ import {
     View,
     TouchableHighlight,
     Button,
-    ScrollView
+    ScrollView,
+    Animated
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
 
@@ -29,21 +25,26 @@ class HomeView extends Component {
 
     render() {
 
-        const {navigate} = this.props.navigation;
         return (
             <View style={accueil_styles.container}>
                 <View style={accueil_styles.row}>
                     <Text style={accueil_styles.title}>Application test React Native</Text>
                 </View>
                 <View style={accueil_styles.row}>
-                    <CustomButton title="Bouton 1" style="orange" URI='Presentation' navigator={this.props.navigation}/>
-                    <CustomButton title="Bouton 2" style="orange" URI='Presentation' navigator={this.props.navigation}/>
-                    <CustomButton title="Bouton 3" style="orange" URI='Presentation' navigator={this.props.navigation}/>
+                    <CustomButton title="Presentation" style="orange" URI='Presentation'
+                                  navigator={this.props.navigation}/>
+                    <CustomButton title="Animation" style="orange" URI='Animation'
+                                  navigator={this.props.navigation}/>
+                    <CustomButton title="Presentation" style="orange" URI='Presentation'
+                                  navigator={this.props.navigation}/>
                 </View>
                 <View style={accueil_styles.row}>
-                    <CustomButton title="Bouton 1" style="orange"/>
-                    <CustomButton title="Bouton 2" style="orange"/>
-                    <CustomButton title="Bouton 3" style="orange"/>
+                    <CustomButton title="Geolocalisation" style="orange" URI='Geolocalisation'
+                                  navigator={this.props.navigation}/>
+                    <CustomButton title="Geolocalisation" style="orange" URI='Geolocalisation'
+                                  navigator={this.props.navigation}/>
+                    <CustomButton title="Geolocalisation" style="orange" URI='Geolocalisation'
+                                  navigator={this.props.navigation}/>
                 </View>
             </View>
         );
@@ -68,16 +69,38 @@ const accueil_styles = StyleSheet.create({
     title: {}
 });
 
-export class PresentationView extends Component {
+class AnimationView extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            fadeAnim: new Animated.Value(0),          // Initial value for opacity: 0
+        };
+    }
+
+    componentDidMount() {
+        Animated.timing(this.state.fadeAnim, {toValue: 0.2}).start();                                  // Starts the animation
+    }
+
+    render() {
+        return (
+            <Animated.View style={{...this.props.style,opacity: this.state.fadeAnim}}>
+                <Text>BLABLALBLALBALBLALBALL</Text>
+            </Animated.View>
+        );
+    }
+}
+
+
+class PresentationView extends Component {
 
     static navigationOptions = {
-        title: 'Prés de l\'ent',
+        title: 'Présentation de l\'entreprise',
     };
+
     render() {
         return (
 
             <ScrollView style={presentation_style.container}>
-
                 <Text style={presentation_style.text}>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                     incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
@@ -107,7 +130,6 @@ export class PresentationView extends Component {
                     fugiat nulla pariatur.
                 </Text>
             </ScrollView>
-
         )
     };
 }
@@ -115,12 +137,30 @@ export class PresentationView extends Component {
 const presentation_style = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'row'
     },
     text: {
         flex: 1,
+
     }
 });
+
+class GeolocalisationView extends Component {
+
+    static navigationOptions = {
+        title: 'Géolocalisation',
+    };
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <CustomGeolocation/>
+        )
+    };
+}
 
 class CustomButton extends Component {
 
@@ -163,10 +203,11 @@ const button_styles = StyleSheet.create({
     }
 });
 
-
 const App_routes = StackNavigator({
-    Home: { screen: HomeView },
-    Presentation: { screen: PresentationView },
+    Home: {screen: HomeView},
+    Presentation: {screen: PresentationView},
+    Geolocalisation: {screen: GeolocalisationView},
+    Animation: {screen: AnimationView}
 });
 
 class TpAccueil4_4_2 extends Component {
